@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facial Expression Analyzer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="app-container">
+        <div class="sidebar">
+            <div class="logo">
+                <i class="fas fa-smile-beam"></i>
+                <h2>MoodSense</h2>
+            </div>
+            <nav>
+                <ul>
+                    <li class="active" data-tab="upload-tab"><i class="fas fa-upload"></i> <span>Upload Photo</span></li>
+                    <li data-tab="camera-tab"><i class="fas fa-camera"></i> <span>Live Camera</span></li>
+                    <li data-tab="history-tab"><i class="fas fa-history"></i> <span>History</span></li>
+                    <li data-tab="about-tab"><i class="fas fa-info-circle"></i> <span>About</span></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <p>© 2025 MoodSense</p>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <header>
+                <h1>Facial Expression Analyzer</h1>
+                <p>Detect your mood and get tips to stay happy!</p>
+            </header>
+
+            <div class="tab-content" id="upload-tab">
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-image"></i> Upload Your Photo</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="upload-container" id="upload-container">
+                            <div class="upload-default">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Drag & Drop an image or Click to Upload</p>
+                            </div>
+                            <input type="file" id="file-input" accept="image/*">
+                            <div class="preview-container">
+                                <img id="preview-image" src="" alt="Preview">
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button id="analyze-btn" class="btn primary-btn" disabled><i class="fas fa-search"></i> Analyze Expression</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results-card" id="results-section" style="display: none;">
+                    <div class="card-header">
+                        <h2><i class="fas fa-chart-pie"></i> Analysis Results</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="result-wrapper">
+                            <div class="result-emoji">
+                                <span id="result-emoji-icon">😊</span>
+                            </div>
+                            <div class="result-details">
+                                <h3>Your Expression: <span id="expression-result">-</span></h3>
+                                <div class="tips-container">
+                                    <h4>Tips to Transform to Happiness:</h4>
+                                    <ul id="tips-list"></ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button id="try-again-btn" class="btn secondary-btn"><i class="fas fa-redo"></i> Try Another Photo</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="camera-tab" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-camera"></i> Live Camera Analysis</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="webcam-container">
+                            <div class="video-wrapper">
+                                <video id="webcam" autoplay playsinline></video>
+                                <canvas id="canvas" style="display: none;"></canvas>
+                                <div id="countdown-overlay" class="countdown-overlay" style="display: none;">
+                                    <div class="countdown-number">5</div>
+                                </div>
+                            </div>
+                            <div class="camera-controls">
+                                <button id="start-camera" class="btn primary-btn"><i class="fas fa-play"></i> Start Camera</button>
+                                <button id="capture-btn" class="btn primary-btn" disabled><i class="fas fa-camera"></i> Analyze (5s)</button>
+                                <button id="stop-camera" class="btn secondary-btn" disabled><i class="fas fa-stop"></i> Stop Camera</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results-card" id="camera-results-section" style="display: none;">
+                    <div class="card-header">
+                        <h2><i class="fas fa-chart-pie"></i> Live Analysis Results</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="result-wrapper">
+                            <div class="result-emoji">
+                                <span id="camera-result-emoji">😊</span>
+                            </div>
+                            <div class="result-details">
+                                <h3>Your Expression: <span id="camera-expression-result">-</span></h3>
+                                <div class="tips-container">
+                                    <h4>Tips to Transform to Happiness:</h4>
+                                    <ul id="camera-tips-list"></ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button id="new-capture-btn" class="btn secondary-btn"><i class="fas fa-redo"></i> Capture Again</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="history-tab" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-history"></i> Your Expression History</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="history-list" id="history-list">
+                            <p class="empty-history">Your analyzed expressions will appear here.</p>
+                            <!-- History items will be dynamically added here -->
+                            <!-- Example history item:
+                            <div class="history-item">
+                                <div class="history-emoji">😊</div>
+                                <div class="history-details">
+                                    <h4>Happy</h4>
+                                    <div class="history-date">May 18, 2025 - 10:30 AM</div>
+                                </div>
+                            </div>
+                            -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="about-tab" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-info-circle"></i> About MoodSense</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="about-content">
+                            <p>MoodSense is an advanced facial expression analysis tool that helps you understand your emotional state through facial recognition technology.</p>
+                            <p>Our AI model has been trained to detect 7 different facial expressions:</p>
+                            <ul class="expression-list">
+                                <li><span class="emoji">😡</span> Angry</li>
+                                <li><span class="emoji">🤢</span> Disgust</li>
+                                <li><span class="emoji">😨</span> Fear</li>
+                                <li><span class="emoji">😊</span> Happy</li>
+                                <li><span class="emoji">😔</span> Sad</li>
+                                <li><span class="emoji">😲</span> Surprise</li>
+                                <li><span class="emoji">😐</span> Neutral</li>
+                            </ul>
+                            <p>Each analysis also provides personalized tips to help you transform your current emotional state to happiness.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="spinner-container">
+            <div class="spinner"></div>
+            <p>Analyzing your expression...</p>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
